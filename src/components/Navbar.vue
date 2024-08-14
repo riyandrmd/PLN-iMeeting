@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg text-light bg-primary">
+  <nav class="navbar navbar-expand-lg text-light py-1 px-3">
     <div class="container-fluid">
       <div class="d-flex align-items-center justify-content-center">
         <a class="navbar-brand mt-2 mt-lg-0" href="#">
@@ -17,7 +17,7 @@
         <a class="link-secondary me-3" href="#">
           <i class="bi bi-bell text-light"></i>
         </a>
-        <div class="d-flex align-items-center justify-content-center">
+        <div class="d-flex align-items-center justify-content-center ">
           <a class="mt-2 mt-lg-0" href="#">
             <img
               src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
@@ -27,9 +27,20 @@
               loading="lazy"
             />
           </a>
-          <h1 class="dropdown-toggle fs-6 ms-2 mb-0">Jhon Doe</h1>
+          <p class="ms-2 mb-0">Jhon Doe</p>
+          <i class="ms-4 bi bi-chevron-down"></i>
         </div>
       </div>
     </div>
   </nav>
 </template>
+
+<style scoped>
+.navbar {
+  background: linear-gradient(45deg, #19a3bb, #296377);
+}
+
+.bi-chevron-down{
+  font-size: 10px;
+}
+</style>
