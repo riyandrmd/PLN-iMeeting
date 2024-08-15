@@ -29,7 +29,7 @@ import { RouterLink } from "vue-router";
 
 <style scoped>
 #sidebar {
-  height: 90vh;
+  height: inherit;
   width: fit-content;
   padding: 20px 15px;
 }

@@ -1,5 +1,5 @@
 <script setup>
-import { useRouter, RouterView } from "vue-router";
+import { useRouter } from "vue-router";
 const router = useRouter();
 </script>
 <template>
@@ -26,6 +26,11 @@ const router = useRouter();
         </button>
       </div>
     </div>
-    <RouterView />
   </main>
 </template>
+
+<style scoped>
+.container-fluid {
+  height: 90vh;
+}
+</style>
