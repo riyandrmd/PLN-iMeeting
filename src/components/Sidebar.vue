@@ -3,20 +3,20 @@ import { RouterLink } from "vue-router";
 </script>
 
 <template>
-  <nav id="sidebar" class="d-md-block sidebar">
+  <nav id="sidebar" class="d-md-block bg-light sidebar">
     <div class="position-sticky">
       <ul class="nav flex-column">
         <li class="nav-item">
           <RouterLink
-            to="/ruangmeeting"
+            to="/"
             class="nav-link d-flex align-items-center justify-content-center"
           >
             <i class="bi bi-house-door"></i>
-          </RouterLink>
+           </RouterLink>
         </li>
         <li class="nav-item">
           <RouterLink
-            to="/"
+            to="/ruangmeeting"
             class="nav-link d-flex align-items-center justify-content-center"
           >
             <i class="bi bi-file-earmark"></i>
