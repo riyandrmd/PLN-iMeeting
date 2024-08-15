@@ -1,3 +1,27 @@
+<script setup>
+import { onBeforeMount, onMounted, reactive } from "vue";
+import axios from "axios";
+
+const jenisKonsumsi = reactive([]);
+const unit = reactive([]);
+const konsumsi = reactive([]);
+
+const getJenisKonsumsi = async () => {
+  await axios
+    .get(
+      "https://6686cb5583c983911b03a7f3.mockapi.io/api/dummy-data/masterJenisKonsumsi"
+    )
+    .then((res) => {
+      konsumsi.push(...res.data);
+      console.log(konsumsi);
+    });
+};
+
+onMounted(() => {
+  getJenisKonsumsi();
+});
+</script>
+
 <template>
   <main class="container-fluid">
     <div class="d-flex m-3">
@@ -11,7 +35,9 @@
         <h1 class="fs-2">Ruang Meeting</h1>
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
-            <router-link class="breadcrumb-item text-decoration-none"
+            <router-link
+              to="/ruangmeeting"
+              class="breadcrumb-item text-decoration-none"
               >Ruang Meeting</router-link
             >
             <li class="breadcrumb-item active" aria-current="page">
@@ -27,20 +53,21 @@
           <h4 class="fs-5">Informasi Ruang Meeting</h4>
           <div class="d-flex gap-4">
             <div class="mb-3">
-              <label for="unit" class="form-label">Email address</label>
+              <label for="unit" class="fw-bold mb-3">Email address</label>
               <input type="text" class="form-control" id="unit" />
             </div>
             <div class="mb-3">
-              <label for="ruang">Ruang Meeting</label>
+              <label for="ruang" class="fw-bold mb-3">Ruang Meeting</label>
               <input type="text" class="form-control" id="ruang" />
             </div>
           </div>
           <div class="mb-3">
-            <label for="kapasitas">Kapasitas</label>
+            <label for="kapasitas" class="fw-bold mb-3">Kapasitas</label>
             <input
               class="form-control"
               type="text"
-              value="Readonly input here..."
+              id="kapasitas"
+              value="READONLY"
               aria-label="readonly input example"
               readonly
             />
@@ -50,56 +77,41 @@
           <h4 class="fs-5">Informasi Rapat</h4>
           <div class="d-flex gap-4">
             <div class="mb-3">
-              <label for="tanggal">Tanggal Rapat</label>
+              <label for="tanggal" class="fw-bold mb-3">Tanggal Rapat</label>
               <input type="text" class="form-control" id="tanggal" />
             </div>
             <div class="mb-3">
-              <label for="wmulai" class="fw-normal">Waktu Mulai</label>
-              <input type="text" class="form-control reado" id="mulai" />
+              <label for="wmulai" class="fw-bold mb-3">Waktu Mulai</label>
+              <input type="text" class="form-control" id="wmulai" />
             </div>
             <div class="mb-3">
-              <label for="welesai">Waktu Selesai</label>
-              <input type="text" class="form-control" id="selesai" />
+              <label for="wselesai" class="fw-bold mb-3">Waktu Selesai</label>
+              <input type="text" class="form-control" id="wselesai" />
             </div>
           </div>
           <div class="mb-3">
-            <label for="peserta">Jumlah Peserta</label>
+            <label for="peserta" class="fw-bold mb-3">Jumlah Peserta</label>
             <input type="text" class="form-control" id="peserta" />
           </div>
           <div class="mb-3">
-            <label for="konsumsi">Konsumsi Rapat</label>
-            <div class="form-check">
+            <label for="konsumsi1" class="fw-bold mb-3">Konsumsi Rapat</label>
+            <div v-for="data in konsumsi" :key="data.id" class="form-check">
               <input
                 class="form-check-input"
                 type="checkbox"
                 value=""
-                id="konsumsi"
+                id="data.name"
               />
-              <label class="form-check-label" for="flexCheckDefault"
-                >Default checkbox</label
-              >
+              <label class="form-check-label" for="data.name">
+                {{ data.name }}
+              </label>
             </div>
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                value=""
-                id="konsumsi"
-              />
-              <label class="form-check-label" for="flexCheckDefault"
-                >Default checkbox</label
-              >
-            </div>
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                value=""
-                id="konsumsi"
-              />
-              <label class="form-check-label" for="flexCheckDefault"
-                >Default checkbox</label
-              >
+          </div>
+          <div class="mb-3">
+            <label for="nominal" class="fw-bold mb-3">Nominal Konsumsi</label>
+            <div class="input-group flex-nowrap">
+              <span class="input-group-text">Rp</span>
+              <input type="text" class="form-control" id="nominal" />
             </div>
           </div>
         </div>
@@ -127,9 +139,9 @@
   border-radius: 8px;
 }
 
-.form-control {
+.form-control,
+.input-group {
   width: 250px;
-  margin-top: 5px;
 }
 
 .save,
