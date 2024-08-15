@@ -1,10 +1,11 @@
 <script setup>
 import Navbar from "@/components/Navbar.vue";
+import Sidebar from "@/components/Sidebar.vue";
 </script>
 
 <template>
   <main>
     <Navbar />
-    <h2>This Is Home</h2>
+    <Sidebar />
   </main>
 </template>
