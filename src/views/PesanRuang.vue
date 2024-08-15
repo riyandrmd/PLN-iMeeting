@@ -1,10 +1,13 @@
 <script setup>
-import { onBeforeMount, onMounted, reactive } from "vue";
+import { computed, onBeforeMount, onMounted, reactive, ref, watch } from "vue";
 import axios from "axios";
 
-const jenisKonsumsi = reactive([]);
+const ruangMeeting = reactive([]);
 const unit = reactive([]);
 const konsumsi = reactive([]);
+const unitSelected = ref("");
+const ruangSelected = ref("");
+const waktuSelesai = ref("");
 
 const getJenisKonsumsi = async () => {
   await axios
@@ -12,13 +15,82 @@ const getJenisKonsumsi = async () => {
       "https://6686cb5583c983911b03a7f3.mockapi.io/api/dummy-data/masterJenisKonsumsi"
     )
     .then((res) => {
-      konsumsi.push(...res.data);
+      konsumsi.splice(
+        0,
+        konsumsi.length,
+        ...res.data.map((item) => ({
+          id: item.id,
+          name: item.name,
+          maxPrice: item.maxPrice,
+          checked: false,
+        }))
+      );
+
       console.log(konsumsi);
     });
 };
 
+const setChecked = (name) => {
+  const item = konsumsi.find((i) => i.name === name);
+  if (item) {
+    item.checked = true;
+  }
+};
+
+const checkedKonsumsi = () => {
+  //membuat check otomatis sesuai inputan waktu selesai
+  const time = waktuSelesai.value;
+  const [hours, minutes] = time.split(":").map(Number);
+  konsumsi.forEach((item) => (item.checked = false));
+
+  if (hours < 11) {
+    setChecked("Snack Siang");
+  } else if (hours > 11 && hours < 14) {
+    setChecked("Makan Siang");
+    setChecked("Snack Siang");
+  } else if (hours > 14) {
+    setChecked("Snack Sore");
+    setChecked("Makan Siang");
+    setChecked("Snack Siang");
+  }
+};
+
+watch(waktuSelesai, () => {
+  checkedKonsumsi();
+});
+
+const getUnit = async () => {
+  await axios
+    .get(
+      "https://6666c7aea2f8516ff7a4e261.mockapi.io/api/dummy-data/masterOffice"
+    )
+    .then((res) => {
+      unit.push(...res.data);
+    });
+};
+
+const getRoomMeeting = async () => {
+  await axios
+    .get(
+      "https://6666c7aea2f8516ff7a4e261.mockapi.io/api/dummy-data/masterMeetingRooms"
+    )
+    .then((res) => {
+      ruangMeeting.push(...res.data);
+    });
+};
+
+const capacity = computed(() => {
+  // console.log("active");
+  const selected = ruangMeeting.find(
+    (room) => room.roomName === ruangSelected.value
+  );
+  return selected ? selected.capacity : 0;
+});
+
 onMounted(() => {
   getJenisKonsumsi();
+  getUnit();
+  getRoomMeeting();
 });
 </script>
 
@@ -53,12 +125,36 @@ onMounted(() => {
           <h4 class="fs-5">Informasi Ruang Meeting</h4>
           <div class="d-flex gap-4">
             <div class="mb-3">
-              <label for="unit" class="fw-bold mb-3">Email address</label>
-              <input type="text" class="form-control" id="unit" />
+              <label for="unit" class="fw-bold mb-3">Unit</label>
+              <select
+                class="form-select form-control mb-3"
+                v-model="unitSelected"
+                id="unit"
+              >
+                <option
+                  v-for="data in unit"
+                  :key="data.id"
+                  :value="data.officeName"
+                >
+                  {{ data.officeName }}
+                </option>
+              </select>
             </div>
             <div class="mb-3">
               <label for="ruang" class="fw-bold mb-3">Ruang Meeting</label>
-              <input type="text" class="form-control" id="ruang" />
+              <select
+                class="form-select form-control mb-3"
+                v-model="ruangSelected"
+                id="ruang"
+              >
+                <option
+                  v-for="data in ruangMeeting"
+                  :key="data.id"
+                  :value="data.roomName"
+                >
+                  {{ data.roomName }}
+                </option>
+              </select>
             </div>
           </div>
           <div class="mb-3">
@@ -67,8 +163,7 @@ onMounted(() => {
               class="form-control"
               type="text"
               id="kapasitas"
-              value="READONLY"
-              aria-label="readonly input example"
+              :value="capacity"
               readonly
             />
           </div>
@@ -78,31 +173,37 @@ onMounted(() => {
           <div class="d-flex gap-4">
             <div class="mb-3">
               <label for="tanggal" class="fw-bold mb-3">Tanggal Rapat</label>
-              <input type="text" class="form-control" id="tanggal" />
+              <input type="date" class="form-control" id="tanggal" />
             </div>
             <div class="mb-3">
               <label for="wmulai" class="fw-bold mb-3">Waktu Mulai</label>
-              <input type="text" class="form-control" id="wmulai" />
+              <input type="time" class="form-control" id="wmulai" />
             </div>
             <div class="mb-3">
               <label for="wselesai" class="fw-bold mb-3">Waktu Selesai</label>
-              <input type="text" class="form-control" id="wselesai" />
+              <input
+                type="time"
+                v-model="waktuSelesai"
+                class="form-control"
+                id="wselesai"
+              />
             </div>
           </div>
           <div class="mb-3">
             <label for="peserta" class="fw-bold mb-3">Jumlah Peserta</label>
-            <input type="text" class="form-control" id="peserta" />
+            <input type="number" class="form-control" id="peserta" />
           </div>
           <div class="mb-3">
-            <label for="konsumsi1" class="fw-bold mb-3">Konsumsi Rapat</label>
+            <label class="fw-bold mb-3">Konsumsi Rapat</label>
             <div v-for="data in konsumsi" :key="data.id" class="form-check">
               <input
                 class="form-check-input"
                 type="checkbox"
-                value=""
-                id="data.name"
+                :value="data.name"
+                :id="data.name"
+                v-model="data.checked"
               />
-              <label class="form-check-label" for="data.name">
+              <label class="form-check-label" :for="data.name">
                 {{ data.name }}
               </label>
             </div>
