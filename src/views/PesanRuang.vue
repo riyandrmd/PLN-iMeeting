@@ -10,7 +10,7 @@ const ruangSelected = ref("");
 const waktuMulai = ref("");
 const waktuSelesai = ref("");
 const tanggalRapat = ref();
-const jumlahPeserta = ref(0);
+const jumlahPeserta = ref(null);
 
 const getJenisKonsumsi = async () => {
   await axios
@@ -41,24 +41,30 @@ const setChecked = (name) => {
 };
 
 const checkedKonsumsi = () => {
-  //membuat check otomatis sesuai inputan waktu selesai
-  const time = waktuSelesai.value;
-  const [hours, minutes] = time.split(":").map(Number);
+  const startTime = waktuMulai.value;
+  const [startHours, startMinutes] = startTime.split(":").map(Number);
+  const endTime = waktuSelesai.value;
+  const [endHours, endMinutes] = endTime.split(":").map(Number);
+
   konsumsi.forEach((item) => (item.checked = false));
 
-  if (hours < 11) {
+  if (startHours < 11 && endHours >= 11 && endHours < 14) {
     setChecked("Snack Siang");
-  } else if (hours > 11 && hours < 14) {
     setChecked("Makan Siang");
+  } else if (startHours < 11 && endHours >= 14) {
     setChecked("Snack Siang");
-  } else if (hours > 14) {
+    setChecked("Makan Siang");
     setChecked("Snack Sore");
+  } else if (startHours >= 11 && startHours < 14 && endHours >= 11 && endHours <= 14) {
     setChecked("Makan Siang");
+  } else if (startHours >= 14) {
+    setChecked("Snack Sore");
+  } else if (startHours < 11 && endHours < 11) {
     setChecked("Snack Siang");
   }
 };
 
-watch(waktuSelesai, () => {
+watch([waktuMulai, waktuSelesai], () => {
   checkedKonsumsi();
 });
 
@@ -93,6 +99,20 @@ const validateWaktu = () => {
   }
 };
 
+const capacity = computed(() => {
+  const selected = ruangMeeting.find(
+    (room) => room.roomName === ruangSelected.value
+  );
+  return selected ? selected.capacity : 0;
+});
+
+const validateJumlahPeserta = () => {
+  if (jumlahPeserta.value > capacity.value) {
+    alert("Jumlah Peserta melebihi kapasitas ruangan");
+    jumlahPeserta.value = 0;
+  }
+};
+
 const getUnit = async () => {
   await axios
     .get(
@@ -113,14 +133,6 @@ const getRoomMeeting = async () => {
     });
 };
 
-const capacity = computed(() => {
-  // console.log("active");
-  const selected = ruangMeeting.find(
-    (room) => room.roomName === ruangSelected.value
-  );
-  return selected ? selected.capacity : 0;
-});
-
 onMounted(() => {
   getJenisKonsumsi();
   getUnit();
@@ -138,15 +150,15 @@ onMounted(() => {
         <i class="bi bi-chevron-left"></i>
       </RouterLink>
       <div class="ms-2">
-        <h1 class="fs-2">Ruang Meeting</h1>
+        <h1 class="fs-2 fw-bolder">Ruang Meeting</h1>
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
             <router-link
               to="/ruangmeeting"
-              class="breadcrumb-item text-decoration-none"
+              class="breadcrumb-item text-decoration-none text-muted"
               >Ruang Meeting</router-link
             >
-            <li class="breadcrumb-item active" aria-current="page">
+            <li class="breadcrumb-item active text-primary" aria-current="page">
               Pesan Ruangan
             </li>
           </ol>
@@ -156,7 +168,7 @@ onMounted(() => {
     <div class="bg-light p-4 border rounded-3 m-3">
       <form>
         <div class="mb-4 pb-4 border-bottom">
-          <h4 class="fs-5">Informasi Ruang Meeting</h4>
+          <h5 class="fw-bold">Informasi Ruang Meeting</h5>
           <div class="d-flex gap-4">
             <div class="mb-3">
               <label for="unit" class="fw-bold mb-3">Unit</label>
@@ -166,6 +178,7 @@ onMounted(() => {
                 id="unit"
                 required
               >
+                <option value="" disabled selected>Pilih Unit</option>
                 <option
                   v-for="data in unit"
                   :key="data.id"
@@ -182,6 +195,7 @@ onMounted(() => {
                 v-model="ruangSelected"
                 id="ruang"
               >
+                <option value="" disabled selected>Pilih Ruang Meeting</option>
                 <option
                   v-for="data in ruangMeeting"
                   :key="data.id"
@@ -198,13 +212,13 @@ onMounted(() => {
               class="form-control"
               type="text"
               id="kapasitas"
-              :value="capacity"
+              v-model="capacity"
               disabled
             />
           </div>
         </div>
         <div class="mb-4 pb-4 border-bottom">
-          <h4 class="fs-5">Informasi Rapat</h4>
+          <h5 class="fw-bold">Informasi Rapat</h5>
           <div class="d-flex gap-4">
             <div class="mb-3">
               <label for="tanggal" class="fw-bold mb-3">Tanggal Rapat</label>
@@ -246,7 +260,9 @@ onMounted(() => {
               type="number"
               class="form-control"
               id="peserta"
+              placeholder="Masukan Jumlah Peserta"
               v-model="jumlahPeserta"
+              @change="validateJumlahPeserta"
               required
             />
           </div>
@@ -281,12 +297,12 @@ onMounted(() => {
         </div>
         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
           <button
-            class="btn btn-light text-danger me-md-2 cancel"
+            class="btn btn-light text-danger me-md-2 fw-bold"
             type="button"
           >
             Batal
           </button>
-          <button class="btn btn-primary save" type="submit">Simpan</button>
+          <button class="btn btn-primary fw-bold" type="submit">Simpan</button>
         </div>
       </form>
     </div>
@@ -303,13 +319,19 @@ onMounted(() => {
   border-radius: 8px;
 }
 
+h5 {
+  font-size: 16px;
+}
+
+label,
+input,
+option,
+select {
+  font-size: 14px;
+}
+
 .form-control,
 .input-group {
   width: 250px;
-}
-
-.save,
-.cancel {
-  font-weight: 500;
 }
 </style>

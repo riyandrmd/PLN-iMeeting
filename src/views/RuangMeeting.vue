@@ -6,7 +6,7 @@ const router = useRouter();
   <main class="container-fluid">
     <div class="d-flex justify-content-between align-items-center m-3">
       <div>
-        <h1 class="fs-2">Ruang Meeting</h1>
+        <h1 class="fs-2 fw-bolder">Ruang Meeting</h1>
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
             <li class="breadcrumb-item active" aria-current="page">
@@ -32,5 +32,9 @@ const router = useRouter();
 <style scoped>
 .container-fluid {
   height: 90vh;
+}
+
+.btn{
+  border-radius: 10px;
 }
 </style>
