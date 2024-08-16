@@ -14,10 +14,17 @@
       </div>
 
       <div class="d-flex align-items-center gap-2">
+        <button
+          class="btn btn-primary d-flex align-items-center me-3"
+          type="button"
+        >
+          <i class="bi bi-megaphone me-2 fs-5"></i>
+          Kontak Aduan
+        </button>
         <a class="link-secondary me-3" href="#">
           <i class="bi bi-bell text-light"></i>
         </a>
-        <div class="d-flex align-items-center justify-content-center ">
+        <div class="d-flex align-items-center justify-content-center">
           <a class="mt-2 mt-lg-0" href="#">
             <img
               src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
@@ -27,7 +34,7 @@
               loading="lazy"
             />
           </a>
-          <p class="ms-2 mb-0">Jhon Doe</p>
+          <p class="ms-3 mb-0">Jhon Doe</p>
           <i class="ms-4 bi bi-chevron-down"></i>
         </div>
       </div>
@@ -40,7 +47,16 @@
   background: linear-gradient(45deg, #19a3bb, #296377);
 }
 
-.bi-chevron-down{
+.bi-chevron-down {
   font-size: 10px;
+}
+
+nav, .btn {
+  font-size: 14px;
+}
+
+.btn {
+  border-radius: 10px;
+  padding: 8px 10px;
 }
 </style>
