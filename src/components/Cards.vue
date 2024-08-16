@@ -57,7 +57,7 @@ onMounted(() => {
     </div>
     <p class="fs mb-0">Periode</p>
     <select class="form-select form-control fs-6 mb-3" v-model="periode">
-      <option class="fs-6" value="" disabled selected>Periode</option>
+      <option class="fs-6" value="" disabled selected>Pilih Periode</option>
       <option
         class="fs-6"
         v-for="data in allSummary"
@@ -124,13 +124,13 @@ onMounted(() => {
                       aria-label="Basic example"
                       :aria-valuenow="konsumsi.totalPackage"
                       aria-valuemin="10"
-                      aria-valuemax="200"
+                      aria-valuemax="500"
                     >
                       <div
                         class="progress-bar"
                         :style="{
                           width:
-                            (100 * (konsumsi.totalPackage - 1)) / (200 - 10) +
+                            (100 * (konsumsi.totalPackage - 1)) / (500 - 10) +
                             '%',
                         }"
                       ></div>
