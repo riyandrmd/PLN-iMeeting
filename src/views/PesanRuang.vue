@@ -329,9 +329,4 @@ option,
 select {
   font-size: 14px;
 }
-
-.form-control,
-.input-group {
-  width: 250px;
-}
 </style>

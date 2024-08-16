@@ -1,6 +1,10 @@
+<script setup>
+import Cards from "../components/Cards.vue";
+</script>
+
 <template>
   <main class="container-fluid">
-    <h1>Home</h1>
+    <Cards />
   </main>
 </template>
 
