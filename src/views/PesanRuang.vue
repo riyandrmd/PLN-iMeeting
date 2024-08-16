@@ -7,7 +7,10 @@ const unit = reactive([]);
 const konsumsi = reactive([]);
 const unitSelected = ref("");
 const ruangSelected = ref("");
+const waktuMulai = ref("");
 const waktuSelesai = ref("");
+const tanggalRapat = ref();
+const jumlahPeserta = ref(0);
 
 const getJenisKonsumsi = async () => {
   await axios
@@ -58,6 +61,37 @@ const checkedKonsumsi = () => {
 watch(waktuSelesai, () => {
   checkedKonsumsi();
 });
+
+const totalPrice = computed(() => {
+  const total = konsumsi
+    .filter((item) => item.checked === true)
+    .reduce((acc, item) => acc + item.maxPrice, 0);
+
+  return total * jumlahPeserta.value;
+});
+
+const validateTanggal = () => {
+  const today = new Date().setHours(0, 0, 0, 0);
+  const selectedDate = new Date(tanggal.value).setHours(0, 0, 0, 0);
+  if (selectedDate < today) {
+    alert("Tanggal sudah terlewati.");
+    tanggal.value = null;
+  }
+};
+
+const validateWaktu = () => {
+  if (
+    waktuSelesai.value &&
+    waktuMulai.value &&
+    waktuSelesai.value <= waktuMulai.value
+  ) {
+    alert(
+      "Waktu selesai tidak boleh lebih kecil atau sama dengan waktu mulai."
+    );
+    waktuSelesai.value = "";
+    waktuMulai.value = "";
+  }
+};
 
 const getUnit = async () => {
   await axios
@@ -130,6 +164,7 @@ onMounted(() => {
                 class="form-select form-control mb-3"
                 v-model="unitSelected"
                 id="unit"
+                required
               >
                 <option
                   v-for="data in unit"
@@ -164,7 +199,7 @@ onMounted(() => {
               type="text"
               id="kapasitas"
               :value="capacity"
-              readonly
+              disabled
             />
           </div>
         </div>
@@ -173,11 +208,25 @@ onMounted(() => {
           <div class="d-flex gap-4">
             <div class="mb-3">
               <label for="tanggal" class="fw-bold mb-3">Tanggal Rapat</label>
-              <input type="date" class="form-control" id="tanggal" />
+              <input
+                type="date"
+                class="form-control"
+                id="tanggal"
+                v-model="tanggalRapat"
+                @change="validateTanggal"
+                required
+              />
             </div>
             <div class="mb-3">
               <label for="wmulai" class="fw-bold mb-3">Waktu Mulai</label>
-              <input type="time" class="form-control" id="wmulai" />
+              <input
+                type="time"
+                v-model="waktuMulai"
+                class="form-control"
+                @change="validateWaktu"
+                id="wmulai"
+                required
+              />
             </div>
             <div class="mb-3">
               <label for="wselesai" class="fw-bold mb-3">Waktu Selesai</label>
@@ -186,12 +235,20 @@ onMounted(() => {
                 v-model="waktuSelesai"
                 class="form-control"
                 id="wselesai"
+                @change="validateWaktu"
+                required
               />
             </div>
           </div>
           <div class="mb-3">
             <label for="peserta" class="fw-bold mb-3">Jumlah Peserta</label>
-            <input type="number" class="form-control" id="peserta" />
+            <input
+              type="number"
+              class="form-control"
+              id="peserta"
+              v-model="jumlahPeserta"
+              required
+            />
           </div>
           <div class="mb-3">
             <label class="fw-bold mb-3">Konsumsi Rapat</label>
@@ -212,7 +269,13 @@ onMounted(() => {
             <label for="nominal" class="fw-bold mb-3">Nominal Konsumsi</label>
             <div class="input-group flex-nowrap">
               <span class="input-group-text">Rp</span>
-              <input type="text" class="form-control" id="nominal" />
+              <input
+                type="text"
+                class="form-control"
+                id="nominal"
+                :value="totalPrice"
+                disabled
+              />
             </div>
           </div>
         </div>
@@ -223,7 +286,7 @@ onMounted(() => {
           >
             Batal
           </button>
-          <button class="btn btn-primary save" type="button">Simpan</button>
+          <button class="btn btn-primary save" type="submit">Simpan</button>
         </div>
       </form>
     </div>
