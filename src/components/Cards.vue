@@ -57,6 +57,7 @@ onMounted(() => {
     </div>
     <p class="fs mb-0">Periode</p>
     <select class="form-select form-control fs-6 mb-3" v-model="periode">
+      <option class="fs-6" value="" disabled selected>Periode</option>
       <option
         class="fs-6"
         v-for="data in allSummary"

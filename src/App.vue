@@ -5,9 +5,9 @@ import { RouterView } from "vue-router";
 </script>
 
 <template>
-  <div class="bg-color">
+  <div>
     <Navbar />
-    <div class="d-flex">
+    <div class="d-flex height">
       <Sidebar />
       <RouterView />
     </div>
@@ -15,8 +15,9 @@ import { RouterView } from "vue-router";
 </template>
 
 <style scoped>
-.bg-color{
-  background-color: rgb(240, 240, 240);
+.height {
+  min-height: 100vh;
 }
 </style>
+
 
