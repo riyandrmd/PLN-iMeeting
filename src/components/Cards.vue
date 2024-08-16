@@ -49,9 +49,20 @@ onMounted(() => {
 
 <template>
   <main class="container-fluid">
-    <h2 class="fs-4 mt-3">Dashboard</h2>
-    <select class="form-select form-control mb-3" v-model="periode">
-      <option v-for="data in allSummary" :key="data.id" :value="data.period">
+    <div class="d-flex justify-content-between align-items-center">
+      <h2 class="fs-5 fw-bold mt-3">
+        <i class="bi bi-gear me-2"></i>DASHBOARD
+      </h2>
+      <i class="bi bi-chevron-right"></i>
+    </div>
+    <p class="fs mb-0">Periode</p>
+    <select class="form-select form-control fs-6 mb-3" v-model="periode">
+      <option
+        class="fs-6"
+        v-for="data in allSummary"
+        :key="data.id"
+        :value="data.period"
+      >
         {{ data.period }}
       </option>
     </select>
@@ -67,10 +78,15 @@ onMounted(() => {
             v-for="(room, index) in data.detailSummary"
             :key="index"
           >
-            <h6>{{ data.officeName }}</h6>
+            <h6 class="fw-bold text-secondary">
+              <i class="bi bi-lightning-charge"></i>
+              {{ data.officeName }}
+            </h6>
             <div class="card border-0 bg-body-secondary" style="width: 14rem">
               <div class="card-body">
-                <p class="card-text mb-2 fw-bold">{{ room.roomName }}</p>
+                <p class="card-text mb-2 fw-bold">
+                  {{ room.roomName }}
+                </p>
                 <div class="d-flex justify-content-between">
                   <div>
                     <p class="card-text fs mb-0">Persentasi Pemakaian</p>
@@ -84,6 +100,7 @@ onMounted(() => {
                       :size="60"
                       :border-width="12"
                       :border-bg-width="15"
+                      fill-color="#19a3bb"
                     />
                   </div>
                 </div>
@@ -106,11 +123,15 @@ onMounted(() => {
                       aria-label="Basic example"
                       :aria-valuenow="konsumsi.totalPackage"
                       aria-valuemin="10"
-                      aria-valuemax="500"
+                      aria-valuemax="200"
                     >
                       <div
                         class="progress-bar"
-                        :style="{ width: konsumsi.totalPackage + '%' }"
+                        :style="{
+                          width:
+                            (100 * (konsumsi.totalPackage - 1)) / (200 - 10) +
+                            '%',
+                        }"
                       ></div>
                     </div>
                   </div>
@@ -136,6 +157,10 @@ small {
 
 .progress {
   height: 8px;
+}
+
+.progress-bar {
+  background-color: #19a3bb;
 }
 
 .progress-container {
