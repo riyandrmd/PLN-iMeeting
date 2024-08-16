@@ -1,5 +1,6 @@
 <script setup>
 import axios from "axios";
+import CircleProgress from "vue3-circle-progress";
 import { watch, computed, onBeforeMount, onMounted, reactive, ref } from "vue";
 
 const allSummary = reactive([]);
@@ -48,13 +49,13 @@ onMounted(() => {
 
 <template>
   <main class="container-fluid">
-    <h2 class="fs-4">Dashboard</h2>
+    <h2 class="fs-4 mt-3">Dashboard</h2>
     <select class="form-select form-control mb-3" v-model="periode">
       <option v-for="data in allSummary" :key="data.id" :value="data.period">
         {{ data.period }}
       </option>
     </select>
-    <div class="container mt-4 d-flex gap-4 flex-wrap">
+    <div class="mt-4 d-flex gap-4 flex-wrap">
       <div
         v-for="(data, index) in summaryByPeriod.data"
         :key="index"
@@ -67,17 +68,53 @@ onMounted(() => {
             :key="index"
           >
             <h6>{{ data.officeName }}</h6>
-            <div class="card" style="width: 14rem">
+            <div class="card border-0 bg-body-secondary" style="width: 14rem">
               <div class="card-body">
-                <p class="card-text">{{ room.roomName }}</p>
-                <p class="card-text">
-                  persentasi :
-                  <span>{{ calculateOccupancyPercentage(room) }}%</span>
-                </p>
-                <p>
-                  Total Konsumsi :
-                  <span>Rp. {{ calculateTotalConsumption(room).toLocaleString() }}</span>
-                </p>
+                <p class="card-text mb-2 fw-bold">{{ room.roomName }}</p>
+                <div class="d-flex justify-content-between">
+                  <div>
+                    <p class="card-text fs mb-0">Persentasi Pemakaian</p>
+                    <strong class="fs-4"
+                      >{{ calculateOccupancyPercentage(room) }}%</strong
+                    >
+                  </div>
+                  <div class="progress-container">
+                    <circle-progress
+                      :percent="calculateOccupancyPercentage(room)"
+                      :size="60"
+                      :border-width="12"
+                      :border-bg-width="15"
+                    />
+                  </div>
+                </div>
+                <p class="card-text fs mb-0">Nominal Konsumsi</p>
+                <strong class="fs-4"
+                  >Rp.
+                  {{ calculateTotalConsumption(room).toLocaleString() }}</strong
+                >
+                <div
+                  class="d-flex align-items-center"
+                  v-for="(konsumsi, index) in room.totalConsumption"
+                  :key="index"
+                >
+                  <small class="w-50">{{ konsumsi.name }}</small>
+                  <div class="container-fluid">
+                    <small class="mb-0 fs">{{ konsumsi.totalPackage }}</small>
+                    <div
+                      class="progress"
+                      role="progressbar"
+                      aria-label="Basic example"
+                      :aria-valuenow="konsumsi.totalPackage"
+                      aria-valuemin="10"
+                      aria-valuemax="500"
+                    >
+                      <div
+                        class="progress-bar"
+                        :style="{ width: konsumsi.totalPackage + '%' }"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -86,3 +123,26 @@ onMounted(() => {
     </div>
   </main>
 </template>
+
+<style scoped>
+.fs {
+  font-size: 12px;
+}
+
+small {
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.progress {
+  height: 8px;
+}
+
+.progress-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+}
+</style>

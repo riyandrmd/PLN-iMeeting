@@ -7,9 +7,3 @@ import Cards from "../components/Cards.vue";
     <Cards />
   </main>
 </template>
-
-<style scoped>
-.container-fluid {
-  height: 90vh;
-}
-</style>
