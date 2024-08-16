@@ -26,9 +26,20 @@ watch(periode, (newPeriod) => {
   );
   if (selectedSummary) {
     Object.assign(summaryByPeriod, selectedSummary);
-    console.log(summaryByPeriod)
+    console.log(summaryByPeriod);
   }
 });
+
+const calculateOccupancyPercentage = (room) => {
+  return ((room.averageOccupancyPerMonth / room.capacity) * 100).toFixed(2);
+};
+
+const calculateTotalConsumption = (room) => {
+  return room.totalConsumption.reduce(
+    (sum, item) => sum + parseInt(item.totalPrice),
+    0
+  );
+};
 
 onMounted(() => {
   getSummary();
@@ -43,12 +54,32 @@ onMounted(() => {
         {{ data.period }}
       </option>
     </select>
-    <div class="wrapper">
-      <div class="card-wrapper">
-        <h6>Unit Kantor</h6>
-        <div class="card" style="width: 14rem">
-          <div class="card-body">
-            <p>Ruang Prambanan</p>
+    <div class="container mt-4 d-flex gap-4 flex-wrap">
+      <div
+        v-for="(data, index) in summaryByPeriod.data"
+        :key="index"
+        class="mb-4"
+      >
+        <div class="d-flex gap-4">
+          <div
+            class="card-container"
+            v-for="(room, index) in data.detailSummary"
+            :key="index"
+          >
+            <h6>{{ data.officeName }}</h6>
+            <div class="card" style="width: 14rem">
+              <div class="card-body">
+                <p class="card-text">{{ room.roomName }}</p>
+                <p class="card-text">
+                  persentasi :
+                  <span>{{ calculateOccupancyPercentage(room) }}%</span>
+                </p>
+                <p>
+                  Total Konsumsi :
+                  <span>Rp. {{ calculateTotalConsumption(room).toLocaleString() }}</span>
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
