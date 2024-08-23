@@ -61,9 +61,3 @@ onMounted(() => {
     </div>
   </main>
 </template>
-
-<style scoped>
-.fs {
-  font-size: 12px;
-}
-</style>

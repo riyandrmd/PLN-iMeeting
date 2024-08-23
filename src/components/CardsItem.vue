@@ -90,10 +90,6 @@ const calculateTotalConsumption = (room) => {
 </template>
 
 <style scoped>
-.fs {
-  font-size: 12px;
-}
-
 small {
   font-size: 10px;
   font-weight: 600;

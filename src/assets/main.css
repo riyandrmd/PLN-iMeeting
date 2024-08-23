@@ -38,3 +38,7 @@ body {
 .input-group {
     width: 250px;
 }
+
+.fs {
+    font-size: 12px;
+  }
