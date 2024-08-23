@@ -1,7 +1,7 @@
 <script setup>
 import axios from "axios";
 import { watch, computed, onBeforeMount, onMounted, reactive, ref } from "vue";
-import CardItem from "../components/CardsItem.vue";
+import CardItem from "@/components/CardsItem.vue";
 
 const allSummary = reactive([]);
 const summaryByPeriod = reactive({});

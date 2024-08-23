@@ -19,7 +19,7 @@ const calculateTotalConsumption = (room) => {
 
 <template>
   <div v-for="(data, index) in summaryData.data" :key="index" class="mb-4">
-    <div class="d-flex gap-4">
+    <div class="d-flex gap-4 flex-wrap">
       <div
         class="card-container"
         v-for="(room, index) in data.detailSummary"
