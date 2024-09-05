@@ -6,7 +6,7 @@ const props = defineProps({
 });
 
 const calculateOccupancyPercentage = (room) => {
-  return ((room.averageOccupancyPerMonth / room.capacity) * 100).toFixed(2);
+  return parseFloat(((room.averageOccupancyPerMonth / room.capacity) * 100).toFixed(2));
 };
 
 const calculateTotalConsumption = (room) => {
