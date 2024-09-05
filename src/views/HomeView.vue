@@ -3,7 +3,13 @@ import Cards from "../components/Cards.vue";
 </script>
 
 <template>
-  <main class="container-fluid">
+  <main class="height">
     <Cards />
   </main>
 </template>
+
+<style scoped>
+.height {
+  min-height: 90vh;
+}
+</style>
